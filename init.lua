@@ -152,6 +152,8 @@ vim.o.splitbelow = true
 vim.o.list = true
 vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
+vim.opt.relativenumber = true
+
 -- Preview substitutions live, as you type!
 vim.o.inccommand = 'split'
 
@@ -248,7 +250,7 @@ rtp:prepend(lazypath)
 require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
-
+  'ThePrimeagen/vim-be-good',
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
   -- keys can be used to configure plugin behavior/loading/etc.
@@ -626,6 +628,42 @@ require('lazy').setup({
         end,
       })
 
+      vim.lsp.config('roslyn', {
+        on_attach = function()
+          print 'Setting up roslyn bollocks'
+        end,
+        settings = {
+		  ['csharp|background_analysis'] = {
+            dotnet_analyzer_diagnostics_scope = fullSolution,
+            dotnet_compiler_diagnostics_scope = fullSolution,
+          },
+		  ['csharp|symbol_search'] = {
+		    dotnet_search_reference_assemblies = true,
+		  },
+          ['csharp|inlay_hints'] = {
+            csharp_enable_inlay_hints_for_implicit_object_creation = true,
+			csharp_enable_inlay_hints_for_implicit_variable_types = true,
+			csharp_enable_inlay_hints_for_lambda_parameter_types = true,
+			csharp_enable_inlay_hints_for_types = true,
+			dotnet_enable_inlay_hints_for_indexer_parameters = true,
+			dotnet_enable_inlay_hints_for_literal_parameters = true,
+			dotnet_enable_inlay_hints_for_object_creation_parameters = true,
+			dotnet_enable_inlay_hints_for_other_parameters = true,
+			dotnet_enable_inlay_hints_for_parameters = true,
+			dotnet_suppress_inlay_hints_for_parameters_that_differ_only_by_suffix = true,
+			dotnet_suppress_inlay_hints_for_parameters_that_match_argument_name = true,
+			dotnet_suppress_inlay_hints_for_parameters_that_match_method_intent = true,
+          },
+          ['csharp|code_lens'] = {
+            dotnet_enable_references_code_lens = true,
+          },
+		  ['csharp|completion'] = {
+		    dotnet_show_completion_items_from_unimported_namespaces = true,
+			dotnet_show_name_completion_suggestions = true,
+			dotnet_provide_regex_completions = true,
+		  }
+        },
+      })
       -- Diagnostic Config
       -- See :help vim.diagnostic.Opts
       vim.diagnostic.config {
@@ -719,6 +757,12 @@ require('lazy').setup({
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
+      require('mason').setup {
+        registries = {
+          'github:mason-org/mason-registry',
+          'github:Crashdummyy/mason-registry',
+        },
+      }
       require('mason-lspconfig').setup {
         ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
         automatic_installation = false,
@@ -979,6 +1023,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.lsp',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
