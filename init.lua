@@ -376,6 +376,50 @@ require('lazy').setup({
     end,
   },
 
+  {
+    -- Debug Framework
+    'mfussenegger/nvim-dap',
+    dependencies = {
+      'rcarriga/nvim-dap-ui',
+    },
+    config = function()
+      require 'configs.nvim-dap'
+    end,
+    event = 'VeryLazy',
+  },
+  { 'nvim-neotest/nvim-nio' },
+  {
+    -- UI for debugging
+    'rcarriga/nvim-dap-ui',
+    dependencies = {
+      'mfussenegger/nvim-dap',
+    },
+    config = function()
+      require 'configs.nvim-dap-ui'
+    end,
+  },
+  {
+    'nvim-neotest/neotest',
+    requires = {
+      {
+        'Issafalcon/neotest-dotnet',
+      },
+    },
+    dependencies = {
+      'nvim-neotest/nvim-nio',
+      'nvim-lua/plenary.nvim',
+      'antoinemadec/FixCursorHold.nvim',
+      'nvim-treesitter/nvim-treesitter',
+    },
+  },
+  {
+    'Issafalcon/neotest-dotnet',
+    lazy = false,
+    dependencies = {
+      'nvim-neotest/neotest',
+    },
+  },
+
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
   -- This is often very useful to both group configuration, as well as handle
@@ -389,7 +433,6 @@ require('lazy').setup({
   --
   -- Then, because we use the `opts` key (recommended), the configuration runs
   -- after the plugin has been loaded as `require(MODULE).setup(opts)`.
-
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
@@ -834,6 +877,11 @@ require('lazy').setup({
             server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
             require('lspconfig')[server_name].setup(server)
           end,
+        },
+      }
+      require('neotest').setup {
+        adapters = {
+          require 'neotest-dotnet',
         },
       }
     end,
