@@ -1,10 +1,10 @@
 local dap = require 'dap'
 
---local mason_path = vim.fn.stdpath 'data' .. '/mason/packages/netcoredbg/netcoredbg'
+local mason_path = vim.fn.stdpath 'data' .. '/mason/packages/netcoredbg/netcoredbg/netcoredbg.exe'
 
 local netcoredbg_adapter = {
   type = 'executable',
-  command = 'C:/Users/ahugh/AppData/Local/nvim-data/mason/packages/netcoredbg/netcoredbg/netcoredbg.exe',
+  command = mason_path,
   args = { '--interpreter=vscode' },
 }
 
