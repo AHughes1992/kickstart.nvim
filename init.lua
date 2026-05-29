@@ -313,17 +313,22 @@ require('lazy').setup({
       -- Use one of the methods in the Integration section to compose the command.
       local mason_registry = require 'mason-registry'
 
-      local rzls_path = vim.fn.expand '$MASON/packages/rzls/libexec'
+      local rzls_path = vim.fn.expand('$LOCALAPPDATA/nvim-data/mason/packages/roslyn/libexec')
       local cmd = {
-        'roslyn',
-        '--stdio',
-        '--logLevel=Information',
-        '--extensionLogDirectory=' .. vim.fs.dirname(vim.lsp.get_log_path()),
-        '--razorSourceGenerator=' .. vim.fs.joinpath(rzls_path, 'Microsoft.CodeAnalysis.Razor.Compiler.dll'),
-        '--razorDesignTimePath=' .. vim.fs.joinpath(rzls_path, 'Targets', 'Microsoft.NET.Sdk.Razor.DesignTime.targets'),
-        '--extension',
-        vim.fs.joinpath(rzls_path, 'RazorExtension', 'Microsoft.VisualStudioCode.RazorExtension.dll'),
-      }
+          "dotnet",
+          vim.fs.joinpath(rzls_path, "Microsoft.CodeAnalysis.LanguageServer.dll"),
+          "--stdio",
+          --"--razorSourceGenerator=" .. vim.fs.joinpath(rzls_path, "Microsoft.CodeAnalysis.Razor.Compiler.dll"),
+          --"--razorDesignTimePath=" .. vim.fs.joinpath(rzls_path, "Targets", "Microsoft.NET.Sdk.Razor.DesignTime.targets"),
+          --"--extension",
+          --vim.fs.joinpath(rzls_path, "RazorExtension", "Microsoft.VisualStudioCode.RazorExtension.dll"),
+          -- '--logLevel=Information', -- Uncomment if you want logging
+          -- '--extensionLogDirectory=' .. vim.fs.dirname(vim.lsp.get_log_path()), -- Uncomment if needed
+          -- '--razorSourceGenerator=' .. vim.fs.joinpath(rzls_path, 'Microsoft.CodeAnalysis.Razor.Compiler.dll'),
+        -- '--razorDesignTimePath=' .. vim.fs.joinpath(rzls_path, 'Targets', 'Microsoft.NET.Sdk.Razor.DesignTime.targets'),
+        -- '--extension',
+        -- vim.fs.joinpath(rzls_path, 'RazorExtension', 'Microsoft.VisualStudioCode.RazorExtension.dll'),
+        }
 
       vim.lsp.config('roslyn', {
         cmd = cmd,
@@ -794,6 +799,9 @@ require('lazy').setup({
       --  By default, Neovim doesn't support everything that is in the LSP specification.
       --  When you add blink.cmp, luasnip, etc. Neovim now has *more* capabilities.
       --  So, we create new capabilities with blink.cmp, and then broadcast that to the servers.
+      require('blink.cmp').setup({
+        accept_key = { '<C-y>', '<CR>' },
+      })
       local capabilities = require('blink.cmp').get_lsp_capabilities()
 
       -- Enable the following language servers
